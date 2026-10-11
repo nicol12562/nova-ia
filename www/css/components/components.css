@@ -340,8 +340,37 @@
 .checklist-item .checklist-status.pending { background: rgba(245, 158, 11, 0.12); color: var(--amber-600); }
 .checklist-item .checklist-status.done { background: rgba(34, 197, 94, 0.12); color: var(--green-600); }
 
-/* ===== Página 404 ===== */
-.page-404 {
+/* ===== Galería de secciones del proyecto ===== */
+.gallery-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-5);
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-radius);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+}
+.gallery-card:hover {
+  border-color: var(--accent-500);
+  transform: translateY(-3px);
+  box-shadow: var(--card-shadow-lg);
+}
+.gallery-card .gallery-icon {
+  font-size: 2rem;
+  opacity: 0.6;
+  margin-bottom: var(--space-2);
+}
+.gallery-card .gallery-title {
+  font-weight: 700;
+  font-size: var(--fs-base);
+  color: var(--fg-0);
+}
+.gallery-card .gallery-desc {
+  font-size: var(--fs-sm);
+  color: var(--fg-3);
+}
   display: flex;
   flex-direction: column;
   align-items: center;

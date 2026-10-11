@@ -5,8 +5,11 @@
 
 // Si el sitio se sirve desde /nombre-repo/, BASE_PATH lo detecta.
 const BASE_PATH = (() => {
-  const path = window.location.pathname.split('/').filter(Boolean).slice(0, 2).join('/') || '/';
-  return path || '/';
+  const path = window.location.pathname.split('/').filter(Boolean);
+  if (path.length >= 3) {
+    return '/' + path[0] + '/' + path[1] + '/';
+  }
+  return '/';
 })();
 
 // Configuración Supabase — SOLO valores públicos para el frontend.
