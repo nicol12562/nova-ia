@@ -1,0 +1,88 @@
+/* ============================================================
+   NOVA AI — Página LOGIN / REGISTRO
+   ============================================================ */
+
+.login-card {
+  max-width: 420px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.login-card .logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--accent-600);
+}
+.login-card .logo .logo-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--accent-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+.login-card h1 {
+  font-size: var(--fs-2xl);
+  font-weight: 800;
+  text-align: center;
+}
+.login-card .subtitle {
+  text-align: center;
+  color: var(--fg-3);
+  font-size: var(--fs-sm);
+}
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--fg-4);
+  font-size: var(--fs-sm);
+}
+.login-divider::before,
+.login-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border-color);
+}
+
+.google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  width: 100%;
+  padding: 0.75rem;
+  font-size: var(--fs-base);
+  font-weight: 600;
+  color: var(--fg-1);
+  background: var(--bg-2);
+  border: 1px solid var(--border-color);
+  border-radius: var(--btn-radius-md);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out), background var(--duration-fast) var(--ease-out);
+}
+.google-btn:hover {
+  border-color: var(--fg-2);
+  background: var(--bg-3);
+}
+
+.form-group .btn-primary {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: var(--space-2);
+}
+.form-group .btn-primary:disabled {
+  opacity: 0.5;
+}
+.form-group .error-global {
+  text-align: center;
+  font-size: var(--fs-sm);
+}

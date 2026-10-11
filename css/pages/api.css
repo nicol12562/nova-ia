@@ -1,0 +1,248 @@
+/* ============================================================
+   NOVA AI — Página API (Nova API)
+   ============================================================ */
+
+/* ===== Account cards ===== */
+.account-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-radius);
+}
+.account-card .label {
+  font-size: var(--fs-sm);
+  color: var(--fg-3);
+}
+.account-card .value {
+  font-size: var(--fs-xl);
+  font-weight: 800;
+  font-family: var(--font-mono);
+}
+.account-card .value.green {
+  color: var(--green-600);
+}
+.account-card .value.amber {
+  color: var(--amber-600);
+}
+
+/* ===== API key card ===== */
+.api-key-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.api-key-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.api-key-header .label {
+  font-size: var(--fs-sm);
+  color: var(--fg-3);
+}
+.api-key-header .key-prefix {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--accent-600);
+}
+.api-key-header .key-suffix {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--fg-3);
+}
+.api-key-value {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-2);
+  border: 1px solid var(--border-color);
+  border-radius: var(--btn-radius-md);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--fg-1);
+}
+.api-key-value .toggle-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--fg-3);
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: background var(--duration-fast) var(--ease-out);
+}
+.api-key-value .toggle-btn:hover {
+  background: var(--bg-3);
+}
+.api-key-value .toggle-btn.visible {
+  color: var(--green-600);
+}
+.api-key-value .copy-btn {
+  background: var(--bg-3);
+  border: none;
+  padding: 0.375rem;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--fg-3);
+  transition: background var(--duration-fast) var(--ease-out);
+}
+.api-key-value .copy-btn:hover {
+  background: var(--bg-4);
+  color: var(--fg-0);
+}
+
+/* ===== Rate limit / usage ===== */
+.rate-limit {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--fs-sm);
+  color: var(--fg-3);
+}
+.rate-limit .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green-500);
+}
+.rate-limit .dot.warn {
+  background: var(--amber-500);
+}
+.rate-limit .dot.danger {
+  background: var(--red-500);
+}
+
+/* ===== Code tabs ===== */
+.code-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: var(--space-3);
+}
+.code-tab {
+  padding: 0.5rem 1rem;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--fg-3);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out);
+}
+.code-tab:hover {
+  color: var(--fg-1);
+}
+.code-tab.active {
+  color: var(--accent-500);
+  border-bottom-color: var(--accent-500);
+}
+.code-tab .tab-icon {
+  margin-right: 0.375rem;
+}
+
+.code-block {
+  display: none;
+  background: #0d0d1a;
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+}
+.code-block.active {
+  display: block;
+}
+.code-block pre {
+  margin: 0;
+  padding: var(--space-4);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+  color: var(--fg-1);
+}
+.code-block pre .comment { color: var(--fg-4); }
+.code-block pre .keyword { color: var(--cyan-500); }
+.code-block pre .string { color: var(--green-500); }
+.code-block pre .number { color: var(--amber-500); }
+.code-block pre .property { color: var(--purple-500); }
+.code-block pre .operator { color: var(--fg-1); }
+
+/* ===== Test console ===== */
+.test-console {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.test-console .console-row {
+  display: flex;
+  gap: var(--space-2);
+}
+.test-console .console-row textarea {
+  flex: 1;
+  padding: 0.625rem 0.75rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--fg-1);
+  background: var(--bg-2);
+  border: 1px solid var(--border-color);
+  border-radius: var(--btn-radius-md);
+  resize: vertical;
+  min-height: 60px;
+}
+.test-console .console-row textarea:focus {
+  outline: none;
+  border-color: var(--accent-500);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+.test-console .console-row textarea::placeholder {
+  color: var(--fg-4);
+}
+.test-console .console-row .btn-primary {
+  padding: 0.625rem 1rem;
+  font-size: var(--fs-sm);
+}
+.test-console .console-output {
+  background: #0d0d1a;
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-radius);
+  padding: var(--space-4);
+  min-height: 120px;
+  max-height: 300px;
+  overflow-y: auto;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+}
+.test-console .console-output .status {
+  font-weight: 700;
+}
+.test-console .console-output .status.ok { color: var(--green-500); }
+.test-console .console-output .status.error { color: var(--red-500); }
+.test-console .console-output .status.loading { color: var(--amber-500); }
+.test-console .console-output pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.test-console .console-output .key {
+  color: var(--cyan-500);
+}
+.test-console .console-output .value {
+  color: var(--green-500);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .test-console .console-row {
+    flex-direction: column;
+  }
+  .api-key-value {
+    flex-wrap: wrap;
+  }
+}

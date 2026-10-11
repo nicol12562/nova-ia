@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planes · Nova AI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.0/dist/supabase.min.js" integrity="sha384-5oW3r+rO6pP8h0MbL2YJc4pDFH6BcXkG3m7Y6D7kOeRv6Q7pK6hQ7dO+0aZzKG2S" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/css/base/variables.css">
+  <link rel="stylesheet" href="/css/base/base.css">
+  <link rel="stylesheet" href="/css/components/components.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/pages/planes.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="navbar">
+    <a href="index.html" class="navbar-link">Inicio</a>
+    <a href="workspace.html" class="navbar-link">Workspace</a>
+    <a href="planes.html" class="navbar-link active">Planes</a>
+    <a href="ajustes.html" class="navbar-link">Ajustes</a>
+    <a href="api.html" class="navbar-link">API</a>
+    <div class="nav-action">
+      <span class="pill pill-amber">1000k tokens</span>
+      <div class="avatar">U</div>
+      <a href="login.html" class="btn-text">Iniciar Sesión</a>
+      <a href="workspace.html" class="btn-primary">Abrir Chat →</a>
+    </div>
+  </header>
+
+  <div class="container" style="padding-top:var(--space-8);">
+    <h1 style="font-size:var(--fs-2xl);font-weight:800;text-align:center;">Planes de Suscripción</h1>
+    <p style="text-align:center;color:var(--fg-3);margin-top:var(--space-2);">Eligí el plan que mejor se ajuste a tu flujo de trabajo.</p>
+
+    <div class="plans-preview" style="max-width:900px;margin:0 auto;">
+      <!-- Gratis -->
+      <div class="plan-card">
+        <div class="plan-name">Gratis</div>
+        <div class="plan-price">$0<small> / mes</small></div>
+        <div class="plan-badge free">+1M tokens / 7 días</div>
+        <ul class="plan-features">
+          <li>Nova Flash (rápido)</li>
+          <li>1.000.000 tokens/mes</li>
+          <li>Sin mini-agentes</li>
+          <li>Acceso a soporte</li>
+        </ul>
+        <button class="wa-btn" style="margin-top:var(--space-4);width:100%;">
+          <i class="fab fa-whatsapp"></i> Contratar Gratis
+        </button>
+      </div>
+
+      <!-- Pro (destacado) -->
+      <div class="plan-card featured">
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">$9<small>/mes</small></div>
+        <div class="plan-badge pro">+2M tokens</div>
+        <ul class="plan-features">
+          <li>Nova Flash + Nova Pro</li>
+          <li>2.000.000 tokens/mes</li>
+          <li>Mini-agentes personalizados</li>
+          <li>Prioridad en soporte</li>
+        </ul>
+        <button class="wa-btn" style="margin-top:var(--space-4);width:100%;">
+          <i class="fab fa-whatsapp"></i> Contratar Pro
+        </button>
+      </div>
+
+      <!-- Plus -->
+      <div class="plan-card">
+        <div class="plan-name">Plus</div>
+        <div class="plan-price">$24<small>/mes</small></div>
+        <div class="plan-badge plus">+5M tokens</div>
+        <ul class="plan-features">
+          <li>Los 3 modelos</li>
+          <li>5.000.000 tokens/mes</li>
+          <li>Mini-agentes ilimitados</li>
+          <li>Velocidad premium</li>
+        </ul>
+        <button class="wa-btn" style="margin-top:var(--space-4);width:100%;">
+          <i class="fab fa-whatsapp"></i> Contratar Plus
+        </button>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="plan-card">
+        <div class="plan-name">Enterprise</div>
+        <div class="plan-price"><span class="gradient-text">Custom</span></div>
+        <div class="plan-badge enterprise">Tokens ilimitados</div>
+        <ul class="plan-features">
+          <li>Modelos propios (endpoint + key)</li>
+          <li>API dedicada</li>
+          <li>SLA de 99.9%</li>
+          <li>Entrenamiento a medida</li>
+        </ul>
+        <button class="wa-btn" style="margin-top:var(--space-4);width:100%;">
+          <i class="fab fa-whatsapp"></i> Hablar con ventas
+        </button>
+      </div>
+    </div>
+
+    <!-- FAQ sencillo -->
+    <div style="margin-top:var(--space-8);max-width:700px;">
+      <h2 class="section-label">Preguntas frecuentes</h2>
+      <div style="background:var(--bg-surface);border:1px solid var(--border-color);border-radius:var(--card-radius);padding:var(--space-4);">
+        <div style="display:flex;gap:var(--space-3);padding:var(--space-2);">
+          <div style="flex:1;font-size:var(--fs-base);font-weight:600;color:var(--fg-0);">
+            ¿Puedo cambiar de plan cuando quiera?
+          </div>
+          <div style="font-size:var(--fs-sm);color:var(--fg-3);">
+            <i class="fas fa-long-arrow-alt-right"></i>
+          </div>
+        </div>
+        <p style="padding-left:var(--space-5);">Sí. Puedes subir o bajar de plan en cualquier momento. Los cambios se aplican de inmediato.</p>
+      </div>
+      <div style="background:var(--bg-surface);border:1px solid var(--border-color);border-radius:var(--card-radius);padding:var(--space-4);margin-top:var(--space-3);">
+        <div style="display:flex;gap:var(--space-3);padding:var(--space-2);">
+          <div style="flex:1;font-size:var(--fs-base);font-weight:600;color:var(--fg-0);">
+            ¿Cuántos agentes puedo crear?
+          </div>
+          <div style="font-size:var(--fs-sm);color:var(--fg-3);">
+            <i class="fas fa-long-arrow-alt-right"></i>
+          </div>
+        </div>
+        <p style="padding-left:var(--space-5);">En Gratis: 0 agentes (bloqueo con CTA). En Pro/Plus: 3 agentes. En Enterprise: ilimitados.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-links">
+        <a href="login.html">Contacto</a>
+        <a href="planes.html">Términos</a>
+        <a href="ajustes.html">Privacidad</a>
+      </div>
+      <p>© 2026 Nova AI. Todos los derechos reservados.</p>
+      <p class="text-muted" style="margin-top:0.375rem;">Nova AI puede cometer errores. Considerá verificar la información importante.</p>
+    </div>
+  </footer>
+
+  <script type="module" src="/js/config.js"></script>
+  <script type="module" src="/js/auth.js"></script>
+</body>
+</html>

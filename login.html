@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Sesión · Nova AI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.0/dist/supabase.min.js" integrity="sha384-5oW3r+rO6pP8h0MbL2YJc4pDFH6BcXkG3m7Y6D7kOeRv6Q7pK6hQ7dO+0aZzKG2S" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@10.0.0/marked.min.js" integrity="sha384-4kXqLJDc3vV6HhQ2Oq6yS8KJk4nZ0nB2f5oJ5ZpF9+Zb+9v1m8d4nP8u2C5RbQ3S" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.3/dist/purify.min.js" integrity="sha384-9vJh5Qm7G5Y8Q9L0M8X2vZ4Lb8J7A8L3Z5W5Z9K8X2vZ4Lb8J7A8L3Z5W5Z9K8X" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="/css/base/variables.css">
+  <link rel="stylesheet" href="/css/base/base.css">
+  <link rel="stylesheet" href="/css/components/components.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/pages/login.css">
+</head>
+<body>
+
+  <!-- Fondo -->
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;background:var(--bg-0);padding:1rem;">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 20% 50%,rgba(79,70,229,0.06),transparent 60%),radial-gradient(ellipse 50% 40% at 80% 20%,rgba(147,51,234,0.06),transparent 60%);"></div>
+
+    <!-- Tarjeta login -->
+    <div style="width:100%;max-width:420px;">
+      <div class="logo" style="display:flex;align-items:center;gap:0.5rem;font-size:1.5rem;font-weight:800;color:var(--accent-600);">
+        <div style="width:40px;height:40px;border-radius:10px;background:var(--accent-gradient);display:flex;align-items:center;justify-content:center;font-size:1.1rem;">N</div>
+        Nova AI
+      </div>
+      <h1 style="font-size:var(--fs-2xl);font-weight:800;text-align:center;">Iniciar Sesión</h1>
+      <p class="subtitle" style="text-align:center;color:var(--fg-3);font-size:var(--fs-sm);">Accede a tu infraestructura de tokens y modelos.</p>
+
+      <!-- Gmail / Google -->
+      <button class="google-btn" id="google-login">
+        <i class="fab fa-google" style="font-size:1.1rem;"></i>
+        Continuar con Google
+      </button>
+
+      <div class="login-divider">
+        <span>O</span>
+      </div>
+
+      <!-- Email + password -->
+      <form id="login-form" style="display:flex;flex-direction:column;gap:0.875rem;">
+        <div class="form-group">
+          <label for="email">Correo Electrónico</label>
+          <input type="email" id="email" placeholder="tu@empresa.com" autocomplete="email" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Contraseña</label>
+          <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" required minlength="6">
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <label style="font-size:var(--fs-sm);color:var(--fg-2);">
+            <input type="checkbox" style="accent-color:var(--accent-500);"> Recordarme
+          </label>
+          <a href="#" id="forgot-password" style="color:var(--accent-600);font-size:var(--fs-sm);">¿Olvidaste tu contraseña?</a>
+        </div>
+        <button type="submit" class="btn-primary" id="login-submit">
+          <i class="fas fa-sign-in-alt"></i> Entrar al Workspace
+        </button>
+        <p style="text-align:center;font-size:var(--fs-sm);color:var(--fg-3);">
+          ¿No tenés cuenta? <a href="register.html" style="color:var(--accent-600);font-weight:600;">Regístrate gratis</a>
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // ===== GOOGLE LOGIN =====
+    document.getElementById('google-login').addEventListener('click', async () => {
+      const { supabase } = window;
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        redirectTo: window.location.origin + '/workspace.html'
+      });
+      if (error) { showToast('Error de Google: ' + error.message, 'error'); }
+    });
+
+    // ===== EMAIL LOGIN =====
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const submitBtn = document.getElementById('login-submit');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
+
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        showToast('¡Bienvenido!', 'success');
+        setTimeout(() => {
+          window.location.href = 'workspace.html';
+        }, 400);
+      } catch (err) {
+        showToast('Error: ' + err.message, 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar al Workspace';
+      }
+    });
+
+    // ===== ¿OLVIDASTE CONTRASEÑA? =====
+    document.getElementById('forgot-password').addEventListener('click', (e) => {
+      e.preventDefault();
+      const email = prompt('Ingresá tu correo para restablecer la contraseña:');
+      if (!email) return;
+      supabase.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/login.html' })
+        .then(() => showToast('Revisa tu correo para restablecer la contraseña.', 'success'))
+        .catch((err) => showToast('Error: ' + err.message, 'error'));
+    });
+
+    // ===== TOAST helper =====
+    function showToast(message, type) {
+      const container = document.createElement('div');
+      container.className = 'toast-container';
+      const toast = document.createElement('div');
+      toast.className = 'toast toast-' + type;
+      toast.innerHTML = '<span class="toast-icon">' + (type === 'success' ? '✓' : '✗') + '</span>' + message;
+      container.appendChild(toast);
+      document.body.appendChild(container);
+      setTimeout(() => { if (container.parentNode) container.parentNode.removeChild(container); }, 4000);
+    }
+  </script>
+</body>
+</html>

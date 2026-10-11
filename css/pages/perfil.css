@@ -1,0 +1,196 @@
+/* ============================================================
+   NOVA AI — Página PERFIL
+   ============================================================ */
+
+/* ===== Sidebar de secciones ===== */
+.profile-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-2);
+}
+.profile-sidebar .section-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--fg-2);
+  transition: background var(--duration-fast) var(--ease-out);
+}
+.profile-sidebar .section-item:hover {
+  background: var(--bg-2);
+}
+.profile-sidebar .section-item.active {
+  background: var(--pill-bg);
+  color: var(--pill-fg);
+}
+.profile-sidebar .section-item .icon {
+  font-size: 1.05rem;
+}
+
+/* ===== Profile header ===== */
+.profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-6);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-radius);
+  margin-bottom: var(--space-4);
+}
+.profile-header .avatar-lg {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--accent-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: var(--space-2);
+}
+.profile-header h2 {
+  font-size: var(--fs-xl);
+  font-weight: 800;
+}
+.profile-header .email {
+  font-size: var(--fs-sm);
+  color: var(--fg-3);
+}
+
+/* ===== Subscription card ===== */
+.subscription-card {
+  padding: var(--space-4);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-radius);
+  margin-bottom: var(--space-4);
+}
+.subscription-card .card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+.subscription-card .card-header h3 {
+  font-size: var(--fs-base);
+  font-weight: 700;
+}
+.subscription-card .card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.subscription-card .plan-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--fs-sm);
+}
+.subscription-card .plan-row .label {
+  color: var(--fg-3);
+}
+.subscription-card .plan-row .value {
+  font-weight: 600;
+}
+
+/* ===== Data usage chart ===== */
+.usage-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.usage-chart .day-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.usage-chart .day-row .day-label {
+  font-size: var(--fs-xs);
+  color: var(--fg-3);
+  width: 60px;
+  flex-shrink: 0;
+}
+.usage-chart .day-row .bar-container {
+  flex: 1;
+  height: 24px;
+  background: var(--bg-3);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.usage-chart .day-row .bar-container .bar {
+  height: 100%;
+  border-radius: 4px;
+  background: var(--accent-gradient);
+  transition: width var(--duration-normal) var(--ease-out);
+}
+.usage-chart .day-row .day-value {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--fg-2);
+  width: 60px;
+  text-align: right;
+}
+
+/* ===== Actions grid ===== */
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+@media (max-width: 600px) {
+  .actions-grid { grid-template-columns: 1fr; }
+}
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  border-radius: var(--btn-radius-md);
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+}
+.action-btn:hover {
+  transform: translateY(-1px);
+}
+.action-btn.secondary {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  color: var(--fg-1);
+}
+.action-btn.secondary:hover {
+  border-color: var(--fg-2);
+}
+.action-btn.danger {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: var(--red-600);
+}
+.action-btn.danger:hover {
+  background: rgba(239, 68, 68, 0.15);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .profile-sidebar {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: var(--space-2);
+    padding: var(--space-2);
+  }
+  .profile-sidebar .section-item {
+    flex-shrink: 0;
+    padding: 0.5rem 0.625rem;
+  }
+}

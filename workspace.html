@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nova AI — Chat</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.0/dist/supabase.min.js" integrity="sha384-5oW3r+rO6pP8h0MbL2YJc4pDFH6BcXkG3m7Y6D7kOeRv6Q7pK6hQ7dO+0aZzKG2S" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@10.0.0/marked.min.js" integrity="sha384-4kXqLJDc3vV6HhQ2Oq6yS8KJk4nZ0nB2f5oJ5ZpF9+Zb+9v1m8d4nP8u2C5RbQ3S" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.3/dist/purify.min.js" integrity="sha384-9vJh5Qm7G5Y8Q9L0M8X2vZ4Lb8J7A8L3Z5W5Z9K8X2vZ4Lb8J7A8L3Z5W5Z9K8X" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="/css/base/variables.css">
+  <link rel="stylesheet" href="/css/base/base.css">
+  <link rel="stylesheet" href="/css/components/components.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/pages/workspace.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <style>
+    /* ===== Sidebar ===== */
+    .sidebar .sidebar-user-row .user-email { display: none; }
+    .sidebar .sidebar-user-row .user-toggle { display: none; }
+    .sidebar .sidebar-item .item-badge.unread { background: var(--accent-600); color: #fff; }
+
+    /* ===== Workspace header ===== */
+    .workspace-header .header-left .menu-btn { display: none; }
+    .workspace-header .header-center .model-selector { min-width: 200px; }
+
+    /* ===== Chat messages ===== */
+    .chat-messages { padding: 0; }
+
+    /* ===== Input bar ===== */
+    .chat-input-bar textarea { min-height: 48px; }
+
+    /* ===== Mobile ===== */
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .drawer-overlay.open { display: block; }
+      .workspace-header .header-left .menu-btn { display: flex; }
+      .workspace-header .header-center { display: none; }
+      .workspace-header .header-center.mobile-visible { display: flex; }
+      .workspace-header .header-center .model-selector { min-width: 120px; }
+      .workspace-header .header-right { position: fixed; right: 0.5rem; top: var(--header-height); }
+      .chat-messages { padding: 0.75rem; }
+    }
+
+    /* ===== Model blocked ===== */
+    .model-blocked {
+      opacity: 0.5;
+      text-decoration: line-through;
+    }
+
+    /* ===== Global ===== */
+    .logged-in .navbar { display: flex; }
+    .logged-in .navbar .user-profile { display: flex; align-items: center; gap: 0.5rem; }
+    .logged-in .navbar .user-profile .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--accent-gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* ===== Empty state ===== */
+    .empty-state .icon { font-size: 3.5rem; }
+  </style>
+</head>
+<body>
+
+  <!-- ===== SPLASH (loading) ===== -->
+  <div class="splash" id="splash">
+    <div class="logo">Nova AI</div>
+    <div class="spinner"></div>
+    <p>Cargando workspace...</p>
+  </div>
+
+  <!-- ===== LOGGED IN NAVBAR ===== -->
+  <header class="navbar logged-in" id="navbar">
+    <a href="index.html" class="navbar-link">Inicio</a>
+    <a href="workspace.html" class="navbar-link active">Workspace</a>
+    <a href="planes.html" class="navbar-link">Planes</a>
+    <a href="ajustes.html" class="navbar-link">Ajustes</a>
+    <a href="api.html" class="navbar-link">API</a>
+    <div class="nav-action">
+      <span id="user-tokens" class="pill pill-amber">Cargando...</span>
+      <div class="user-profile" id="user-profile"></div>
+      <a href="login.html" class="btn-text" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Salir</a>
+    </div>
+  </header>
+
+  <!-- ===== OVERLAY MOBILE ===== -->
+  <div class="drawer-overlay" id="drawer-overlay"></div>
+
+  <!-- ===== MAIN ===== -->
+  <div class="main-content" id="main-content">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <div class="logo-icon">N</div>
+          <div class="logo-text">Nova<span>AI</span></div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Conversaciones</div>
+          <div class="sidebar-item" id="new-chat-item">
+            <span class="item-icon"><i class="fas fa-plus-circle"></i></span>
+            <span class="item-label">Nuevo chat</span>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Mini-Agentes</div>
+          <div class="sidebar-item" id="agent-nova-general" data-agent-id="nova-general">
+            <span class="item-icon"><i class="fas fa-sparkles"></i></span>
+            <span class="item-label">Nova General</span>
+            <span class="item-badge free">Gratis</span>
+          </div>
+          <div class="sidebar-item" id="agent-blocked">
+            <span class="item-icon"><i class="fas fa-lock"></i></span>
+            <span class="item-label">Agentes Pro</span>
+            <span class="item-badge blocked">BLOQUEADO</span>
+          </div>
+          <p class="text-muted" style="font-size:var(--fs-xs);padding:0.375rem 0.5rem 0.5rem;color:var(--fg-3);">
+            En el plan Gratis no puedes crear agentes propios.
+          </p>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Historial</div>
+          <div id="conversation-list">
+            <div class="empty-state" style="padding:1rem;">
+              <p class="text-muted">Sin conversaciones</p>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-item" id="go-home">
+          <span class="item-icon"><i class="fas fa-home"></i></span>
+          <span class="item-label">Inicio</span>
+        </div>
+        <div class="sidebar-item" id="open-plans">
+          <span class="item-icon"><i class="fas fa-layer-group"></i></span>
+          <span class="item-label">Mejorar Plan</span>
+        </div>
+        <div class="sidebar-item" id="open-profile">
+          <span class="user-avatar">U</span>
+          <div class="user-info">
+            <div class="user-name" id="sidebar-user-name">Usuario</div>
+            <div class="user-email" id="sidebar-user-email">email@ejemplo.com</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===== WORKSPACE BODY ===== -->
+    <div class="main-content">
+
+      <!-- ===== HEADER ===== -->
+      <header class="workspace-header" id="workspace-header">
+        <button class="menu-btn" id="mobile-menu-btn">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="header-left">
+          <span class="page-title" id="page-title">Nova General</span>
+        </div>
+        <div class="header-center" id="header-center">
+          <div class="model-selector">
+            <span class="selected" id="selected-model">Nova Flash</span>
+            <i class="fas fa-chevron-down chevron"></i>
+          </div>
+          <span class="token-divider">·</span>
+          <span class="token-bar">
+            <span class="token-label">Tokens</span>
+            <span class="token-value amber" id="token-bar">0 / 1.0M</span>
+            <span class="token-divider">·</span>
+            <span class="token-value green" id="days-bar">7d rest.</span>
+          </span>
+        </div>
+        <div class="header-actions">
+          <button class="btn-text" id="mini-agents-btn">
+            <i class="fas fa-robot"></i> Mini-Agentes
+          </button>
+          <button class="btn-text" id="open-plans-btn">
+            <i class="fas fa-layer-group"></i> Planes
+          </button>
+        </div>
+      </header>
+
+      <!-- ===== CHAT BODY ===== -->
+      <div class="chat-body">
+        <div class="chat-messages" id="chat-messages">
+          <!-- Pantalla vacía -->
+          <div class="empty-state" id="empty-state">
+            <div class="icon"><i class="fas fa-comment-dots"></i></div>
+            <h3>¿En qué puedo ayudarte hoy?</h3>
+            <div class="suggestions-grid" id="suggestions-grid">
+              <div class="suggestion-item" data-suggest="Resume este texto en 3 líneas">
+                <span class="icon">📝</span>
+                <span class="label">Redactar resumen</span>
+              </div>
+              <div class="suggestion-item" data-suggest="Escribe un script de TypeScript para auditar tokens">
+                <span class="icon">💻</span>
+                <span class="label">Crear código TS</span>
+              </div>
+              <div class="suggestion-item" data-suggest="Estrategias para bajar latencia en inferencia">
+                <span class="icon">⚡</span>
+                <span class="label">Optimizar arquitectura</span>
+              </div>
+              <div class="suggestion-item" data-suggest="Explica cómo funciona una LLM moderna en 2 oraciones">
+                <span class="icon">📚</span>
+                <span class="label">Aprender concepto</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input -->
+        <div class="chat-input-bar">
+          <textarea id="chat-input" placeholder="Envía un mensaje a Nova AI..." rows="1"></textarea>
+          <div class="input-actions">
+            <button id="stop-btn" class="btn-icon" title="Detener" style="display:none;">
+              <i class="fas fa-stop"></i>
+            </button>
+            <button id="send-btn" class="btn-primary">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bajo del chat (aviso) -->
+      <div style="text-align:center;padding:var(--space-2) var(--space-4);font-size:var(--fs-xs);color:var(--fg-3);">
+        Nova AI puede cometer errores. Considerá verificar la información importante.
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    // ===== Helper: auto-resize textarea =====
+    const textarea = document.getElementById('chat-input');
+    textarea.addEventListener('input', () => {
+      textarea.style.height = 'auto';
+      textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+      if (textarea.value.length > 0) {
+        document.getElementById('stop-btn').style.display = 'flex';
+        document.getElementById('send-btn').disabled = true;
+      } else {
+        document.getElementById('stop-btn').style.display = 'none';
+        document.getElementById('send-btn').disabled = false;
+      }
+    });
+    textarea.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        document.getElementById('send-btn').click();
+      }
+    });
+
+    // ===== Sugercciones =====
+    document.querySelectorAll('.suggestion-item').forEach(el => {
+      el.addEventListener('click', () => {
+        textarea.value = el.dataset.suggest;
+        textarea.focus();
+      });
+    });
+
+    // ===== Envío de mensaje =====
+    let currentConvId = null;
+    let isStreaming = false;
+
+    async function sendMessage() {
+      const text = textarea.value.trim();
+      if (!text || isStreaming) return;
+
+      // 1. Obtener o crear conversación
+      if (!currentConvId) {
+        const { data, error } = await supabase.from('conversations').insert([{ user_id: supabase.auth.user().id }]).select().single();
+        if (error) { showToast('No se pudo crear la conversación', 'error'); return; }
+        currentConvId = data.id;
+      }
+
+      // 2. Guardar el mensaje del usuario
+      await supabase.from('messages').insert([{
+        content: text,
+        role: 'user',
+        conversation_id: currentConvId,
+        model: document.getElementById('selected-model').textContent
+      }]);
+
+      // 3. Agregar al chat localmente
+      const chatEl = document.getElementById('chat-messages');
+      chatEl.insertAdjacentHTML('beforeend', `
+        <div class="chat-message user">
+          <div class="message-meta">Tú · ${new Date().toLocaleTimeString()}</div>
+          <div class="message-content">${DOMPurify.sanitize(marked.parse(text))}</div>
+        </div>
+      `);
+      chatEl.scrollTop = chatEl.scrollHeight;
+
+      // 4. Limpiar input
+      textarea.value = '';
+      textarea.style.height = 'auto';
+      isStreaming = true;
+      document.getElementById('stop-btn').style.display = 'flex';
+      document.getElementById('send-btn').disabled = true;
+
+      // 5. Llamar a la función chat (SSE)
+      const model = document.getElementById('selected-model').textContent;
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 30000);
+
+        const res = await fetch('/functions/v1/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            conversation_id: currentConvId,
+            model,
+            message: text,
+            stream: true
+          }),
+          signal: controller.signal
+        });
+        clearTimeout(timeout);
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({ error: 'Error en la función' }));
+          throw new Error(err.error || 'Error en la función');
+        }
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const data = line.slice(6).trim();
+              if (data === '[DONE]') continue;
+              try {
+                const msg = JSON.parse(data);
+                if (msg.choices && msg.choices[0]?.delta?.content) {
+                  // Agregar fragmento de texto
+                  const lastMsg = chatEl.querySelector('.chat-message:last-child .message-content');
+                  if (lastMsg) {
+                    lastMsg.insertAdjacentHTML('beforeend', DOMPurify.sanitize(msg.choices[0].delta.content));
+                  } else {
+                    chatEl.insertAdjacentHTML('beforeend', `
+                      <div class="chat-message assistant">
+                        <div class="message-meta">Nova AI · ${new Date().toLocaleTimeString()}</div>
+                        <div class="message-content">${DOMPurify.sanitize(msg.choices[0].delta.content)}</div>
+                      </div>
+                    `);
+                  }
+                  chatEl.scrollTop = chatEl.scrollHeight;
+                }
+                if (msg.usage) {
+                  // Actualizar counter de tokens si se recibe
+                  console.log('[usage]', msg.usage);
+                }
+              } catch (e) { /* ignorar líneas inválidas */ }
+            }
+          }
+        }
+      } catch (err) {
+        // Fallback: respuesta completa
+        showToast('Error de streaming: ' + err.message, 'error');
+      } finally {
+        isStreaming = false;
+        document.getElementById('stop-btn').style.display = 'none';
+        document.getElementById('send-btn').disabled = false;
+        textarea.style.height = 'auto';
+      }
+    }
+
+    document.getElementById('send-btn').addEventListener('click', sendMessage);
+    document.getElementById('stop-btn').addEventListener('click', () => {
+      // TODO: cerrar stream SSE si es implementado
+      isStreaming = false;
+      document.getElementById('stop-btn').style.display = 'none';
+      document.getElementById('send-btn').disabled = false;
+      showToast('Envío detenido', 'info');
+    });
+
+    // ===== Menú mobile =====
+    document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('drawer-overlay').classList.toggle('open');
+    });
+    document.getElementById('drawer-overlay').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('drawer-overlay').classList.remove('open');
+    });
+
+    // ===== NUEVO CHAT =====
+    document.getElementById('new-chat-item').addEventListener('click', async () => {
+      const { data, error } = await supabase.from('conversations').insert([{ user_id: supabase.auth.user().id }]).select().single();
+      if (error) { showToast('Error al crear chat', 'error'); return; }
+      currentConvId = data.id;
+      const chatEl = document.getElementById('chat-messages');
+      chatEl.innerHTML = `
+        <div class="empty-state" id="empty-state">
+          <div class="icon"><i class="fas fa-comment-dots"></i></div>
+          <h3>¿En qué puedo ayudarte hoy?</h3>
+          <div class="suggestions-grid" id="suggestions-grid">
+            <div class="suggestion-item" data-suggest="Resume este texto en 3 líneas">
+              <span class="icon">📝</span><span class="label">Redactar resumen</span>
+            </div>
+            <div class="suggestion-item" data-suggest="Escribe un script de TypeScript para auditar tokens">
+              <span class="icon">💻</span><span class="label">Crear código TS</span>
+            </div>
+            <div class="suggestion-item" data-suggest="Estrategias para bajar latencia en inferencia">
+              <span class="icon">⚡</span><span class="label">Optimizar arquitectura</span>
+            </div>
+            <div class="suggestion-item" data-suggest="Explica cómo funciona una LLM moderna en 2 oraciones">
+              <span class="icon">📚</span><span class="label">Aprender concepto</span>
+            </div>
+          </div>
+        </div>
+      `;
+      document.getElementById('page-title').textContent = 'Nova General';
+      textarea.focus();
+      document.getElementById('stop-btn').style.display = 'none';
+      document.getElementById('send-btn').disabled = false;
+    });
+
+    // ===== LOGOUT =====
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+      await supabase.auth.signOut();
+      window.location.href = '/login.html';
+    });
+
+    // ===== TOAST helper =====
+    function showToast(msg, type) {
+      const container = document.createElement('div');
+      container.className = 'toast-container';
+      const toast = document.createElement('div');
+      toast.className = 'toast toast-' + type;
+      toast.innerHTML = `<span class="toast-icon">${type === 'success' ? '✓' : '✗'}</span>${msg}`;
+      container.appendChild(toast);
+      document.body.appendChild(container);
+      setTimeout(() => { if (container.parentNode) container.parentNode.removeChild(container); }, 4000);
+    }
+  </script>
+</body>
+</html>

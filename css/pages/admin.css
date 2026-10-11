@@ -1,0 +1,304 @@
+/* ============================================================
+   NOVA AI — Página ADMIN (consola clara / light theme)
+   ============================================================ */
+
+/* Light theme override */
+.admin-light {
+  --bg-0: #f5f5fa;
+  --bg-1: #e8e8f0;
+  --bg-2: #d4d4e0;
+  --bg-3: #b0b0c8;
+  --bg-surface: #ffffff;
+  --fg-0: #1a1a2e;
+  --fg-1: #3a3a5a;
+  --fg-2: #5a5a7a;
+  --fg-3: #7a7a9a;
+  --border-color: #d0d0e0;
+  --pill-bg: rgba(79, 70, 229, 0.08);
+  --pill-fg: var(--accent-600);
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+/* ===== Admin header ===== */
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-1);
+  border: 1px solid var(--border-color);
+  border-radius: var(--btn-radius-lg);
+  margin-bottom: var(--space-4);
+}
+.admin-header h1 {
+  font-size: var(--fs-xl);
+  font-weight: 800;
+}
+.admin-header .admin-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+.admin-header .admin-actions button {
+  padding: 0.4rem 0.8rem;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-out);
+}
+.admin-header .admin-actions button:hover {
+  background: var(--bg-2);
+}
+
+/* ===== Stats cards ===== */
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+@media (max-width: 900px) {
+  .admin-stats { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .admin-stats { grid-template-columns: 1fr; }
+}
+.admin-stat-card {
+  padding: var(--space-4);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-radius);
+  text-align: center;
+}
+.admin-stat-card .label {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--fg-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.admin-stat-card .value {
+  font-size: var(--fs-xl);
+  font-weight: 800;
+  color: var(--fg-0);
+  margin-top: 0.25rem;
+}
+.admin-stat-card .value.green { color: var(--green-600); }
+.admin-stat-card .value.amber { color: var(--amber-600); }
+.admin-stat-card .value.blue { color: var(--accent-600); }
+
+/* ===== Tables ===== */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+}
+.admin-table th {
+  background: var(--bg-2);
+  color: var(--fg-1);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.625rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+.admin-table td {
+  padding: 0.625rem 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--fg-1);
+}
+.admin-table tr:hover td {
+  background: var(--bg-1);
+}
+.admin-table .empty {
+  text-align: center;
+  padding: var(--space-6);
+  color: var(--fg-3);
+}
+
+/* ===== User card in admin ===== */
+.user-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-radius);
+}
+.user-card .user-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.user-card .user-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--accent-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+}
+.user-card .user-info {
+  flex: 1;
+}
+.user-card .user-name {
+  font-size: var(--fs-base);
+  font-weight: 700;
+  color: var(--fg-0);
+}
+.user-card .user-email {
+  font-size: var(--fs-sm);
+  color: var(--fg-3);
+}
+.user-card .user-plan-badge {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+}
+.user-card .user-plan-badge.free { background: rgba(245, 158, 11, 0.1); color: var(--amber-600); }
+.user-card .user-plan-badge.pro { background: rgba(147, 51, 234, 0.1); color: var(--purple-600); }
+.user-card .user-plan-badge.plus { background: rgba(34, 197, 94, 0.1); color: var(--green-600); }
+.user-card .user-plan-badge.enterprise { background: rgba(6, 182, 212, 0.1); color: var(--cyan-600); }
+
+/* ===== Status badges ===== */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+.status-badge.pending {
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--amber-600);
+}
+.status-badge.verified {
+  background: rgba(34, 197, 94, 0.12);
+  color: var(--green-600);
+}
+.status-badge.suspended {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--red-600);
+}
+
+/* ===== Action buttons ===== */
+.admin-actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.admin-actions button {
+  padding: 0.375rem 0.625rem;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-out);
+}
+.admin-actions button.primary {
+  background: var(--accent-gradient);
+  color: #fff;
+  border: none;
+}
+.admin-actions button.primary:hover {
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+}
+.admin-actions button.secondary {
+  background: var(--bg-2);
+  border: 1px solid var(--border-color);
+  color: var(--fg-1);
+}
+.admin-actions button.secondary:hover {
+  background: var(--bg-3);
+}
+.admin-actions button.danger {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: var(--red-600);
+}
+.admin-actions button.danger:hover {
+  background: rgba(239, 68, 68, 0.18);
+}
+
+/* ===== Credentials vault ===== */
+.credentials-vault {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.credentials-vault .vault-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--btn-radius-md);
+}
+.credentials-vault .vault-item .label {
+  font-size: var(--fs-sm);
+  color: var(--fg-3);
+  width: 100%;
+  flex-shrink: 0;
+}
+.credentials-vault .vault-item .value {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--fg-1);
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.credentials-vault .vault-item .host {
+  font-size: var(--fs-xs);
+  color: var(--fg-4);
+}
+.credentials-vault .vault-actions {
+  display: flex;
+  gap: 0.375rem;
+}
+.credentials-vault .vault-actions button {
+  padding: 0.25rem 0.5rem;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-2);
+  color: var(--fg-2);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-out);
+}
+.credentials-vault .vault-actions button:hover {
+  background: var(--bg-3);
+}
+.credentials-vault .vault-actions button.save {
+  background: var(--green-600);
+  border-color: var(--green-600);
+  color: #fff;
+}
+.credentials-vault .vault-actions button.save:hover {
+  background: var(--green-700);
+}
+.credentials-vault .vault-actions button.test {
+  border-color: var(--cyan-600);
+  color: var(--cyan-600);
+}
+.credentials-vault .vault-actions button.test:hover {
+  background: rgba(6, 182, 212, 0.1);
+}

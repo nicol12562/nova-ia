@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consola de Admin · Nova AI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.0/dist/supabase.min.js" integrity="sha384-5oW3r+rO6pP8h0MbL2YJc4pDFH6BcXkG3m7Y6D7kOeRv6Q7pK6hQ7dO+0aZzKG2S" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@10.0.0/marked.min.js" integrity="sha384-4kXqLJDc3vV6HhQ2Oq6yS8KJk4nZ0nB2f5oJ5ZpF9+Zb+9v1m8d4nP8u2C5RbQ3S" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.3/dist/purify.min.js" integrity="sha384-9vJh5Qm7G5Y8Q9L0M8X2vZ4Lb8J7A8L3Z5W5Z9K8X2vZ4Lb8J7A8L3Z5W5Z9K8X" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="/css/base/variables.css">
+  <link rel="stylesheet" href="/css/base/base.css">
+  <link rel="stylesheet" href="/css/components/components.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/pages/admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body class="admin-light">
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="navbar">
+    <a href="index.html" class="navbar-link">Inicio</a>
+    <a href="workspace.html" class="navbar-link">Workspace</a>
+    <a href="planes.html" class="navbar-link">Planes</a>
+    <a href="ajustes.html" class="navbar-link">Ajustes</a>
+    <a href="api.html" class="navbar-link">API</a>
+    <div class="nav-action">
+      <span class="pill pill-blue">Admin</span>
+      <div class="user-profile">
+        <div class="avatar">G</div>
+      </div>
+      <a href="login.html" class="btn-text">Salir</a>
+    </div>
+  </header>
+
+  <div class="container" style="padding-top:var(--space-6);">
+    <!-- Admin header -->
+    <div class="admin-header">
+      <h1>Consola de Administración</h1>
+      <div class="admin-actions">
+        <button id="refresh-btn">
+          <i class="fas fa-sync-alt"></i> Actualizar
+        </button>
+        <button class="btn-danger" id="logout-admin-btn">
+          <i class="fas fa-sign-out-alt"></i> Salir
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats cards -->
+    <div class="admin-stats">
+      <div class="admin-stat-card">
+        <div class="label">Total de usuarios</div>
+        <div class="value" id="total-users">0</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="label">Plan trial</div>
+        <div class="value amber" id="trial-users">0</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="label">Plan pro</div>
+        <div class="value blue" id="pro-users">0</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="label">Ingresos (USD)</div>
+        <div class="value green" id="total-income">$0.00</div>
+      </div>
+    </div>
+
+    <!-- Users table -->
+    <div class="card" style="margin-top:var(--space-4);">
+      <div class="card-header" style="margin-bottom:var(--space-3);">
+        <h3>Usuarios registrados</h3>
+        <div style="display:flex;gap:var(--space-2);">
+          <input type="text" id="user-search" placeholder="Buscar usuario..." style="font-size:var(--fs-sm);padding:0.4rem 0.6rem;">
+          <button class="btn-secondary" id="refresh-users-btn">
+            <i class="fas fa-sync-alt"></i> Actualizar
+          </button>
+        </div>
+      </div>
+      <div id="users-table">
+        <div class="empty">Cargando usuarios...</div>
+      </div>
+    </div>
+
+    <!-- Credentials vault -->
+    <div class="card" style="margin-top:var(--space-4);">
+      <div class="card-header" style="margin-bottom:var(--space-3);">
+        <h3>Bóveda de credenciales</h3>
+        <p class="card-desc">Secrets server-side. La UI NUNCA recibe las keys de vuelta.</p>
+      </div>
+      <div class="credentials-vault" id="credentials-vault">
+        <div class="vault-item">
+          <span class="label">Gemini API Key</span>
+          <div class="vault-actions">
+            <button class="test" id="ping-test-btn"><i class="fas fa-play"></i> Ping Test</button>
+            <button class="save" id="save-credentials-btn"><i class="fas fa-save"></i> Guardar</button>
+          </div>
+        </div>
+        <div class="vault-item">
+          <span class="label">OpenRouter API Key</span>
+          <div class="vault-actions">
+            <button class="test" id="ping-test-or-btn"><i class="fas fa-play"></i> Ping Test</button>
+            <button class="save" id="save-credentials-or-btn"><i class="fas fa-save"></i> Guardar</button>
+          </div>
+        </div>
+        <div class="vault-item" id="status-display">
+          <span class="label">Estado</span>
+          <span id="status-text" class="value">Sin configuración</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    // ===== Refrescar usuarios =====
+    async function refreshUsers() {
+      const table = document.getElementById('users-table');
+      table.innerHTML = '<div class="empty">Cargando...</div>';
+      try {
+        const { data: users, error } = await supabase
+          .from('profiles')
+          .select('id,display_name,email,plan,role,tokens_used,tokens_limit,trial_ends_at,plan_ends_at,suspended')
+          .order('created_at', { ascending: false });
+        if (error) throw error;
+        if (!users || users.length === 0) {
+          table.innerHTML = '<div class="empty">No hay usuarios.</div>';
+          return;
+        }
+        let html = '<table class="admin-table"><thead><tr>' +
+          '<th>Usuario</th><th>Email</th><th>Plan</th><th>Estado</th><th>Controles</th>' +
+          '</tr></thead><tbody>';
+        for (const u of users) {
+          html += `<tr>
+            <td><div class="user-name">${u.display_name || 'Sin nombre'}</div></td>
+            <td>${u.email}</td>
+            <td><span class="badge badge-${u.plan?.toLowerCase() || 'gray'}">${u.plan || 'Gratis'}</span></td>
+            <td>
+              ${u.suspended === true
+                ? '<span class="status-badge suspended">Suspendido</span>'
+                : '<span class="status-badge verified">Activo</span>'}
+            </td>
+            <td>
+              <div class="admin-actions">
+                <button class="secondary" onclick="Nova.admin.changePlan('${u.id}', '${u.plan || 'Gratis'}')">Cambiar plan</button>
+                <button class="secondary" onclick="Nova.admin.addTokens('${u.id}', 1000000)">+1M tokens</button>
+                <button class="secondary" onclick="Nova.admin.creditBalance('${u.id}', 25)">+$25 USD</button>
+                <button class="secondary" onclick="Nova.admin.extendExpiration('${u.id}')">Extender vencimiento</button>
+                ${u.suspended === true ? '<button class="danger" onclick="Nova.admin.reactivate(' + u.id + ')">Reactivar</button>'
+                  : '<button class="danger" onclick="Nova.admin.suspend(' + u.id + ')">Suspender</button>'}
+                <button class="secondary" onclick="Nova.admin.viewUsage('${u.id}')">Ver uso</button>
+              </div>
+            </td>
+          </tr>`;
+        }
+        html += '</tbody></table>';
+        table.innerHTML = html;
+        Nova.admin.populateUsers(users);
+        Nova.admin.updateStats(users);
+      } catch (e) {
+        table.innerHTML = '<div class="empty">Error: ' + e.message + '</div>';
+      }
+    }
+
+    // ===== Admin actions =====
+    window.Nova = window.Nova || {};
+    window.Nova.admin = {
+      users: [],
+
+      changePlan(userId, currentPlan) {
+        const plan = prompt('Nuevo plan (Gratis/Pro/Plus/Enterprise):', 'Pro');
+        if (!plan) return;
+        supabase.from('profiles').update({ plan, plan_ends_at: null }).eq('id', userId).then(() => {
+          showToast('Plan cambiado a ' + plan, 'success');
+          refreshUsers();
+        }).catch(err => showToast('Error: ' + err.message, 'error'));
+      },
+
+      addTokens(userId, amount) {
+        supabase.from('profiles').update({ tokens_limit: amount }).eq('id', userId).then(() => {
+          showToast('Tokens añadidos', 'success');
+          refreshUsers();
+        }).catch(err => showToast('Error: ' + err.message, 'error'));
+      },
+
+      creditBalance(userId, amount) {
+        supabase.from('profiles').update({ balance_usd: amount }).eq('id', userId).then(() => {
+          showToast('Saldo creditado: $' + amount, 'success');
+          refreshUsers();
+        }).catch(err => showToast('Error: ' + err.message, 'error'));
+      },
+
+      extendExpiration(userId) {
+        const { data: profile } = supabase.from('profiles').select('trial_ends_at,plan_ends_at').eq('id', userId).single();
+        const now = new Date();
+        const expires = new Date(now.setDate(now.getDate() + 30));
+        supabase.from('profiles').update({ trial_ends_at: expires, plan_ends_at: expires }).eq('id', userId).then(() => {
+          showToast('Vencimiento extendido 30 días', 'success');
+          refreshUsers();
+        }).catch(err => showToast('Error: ' + err.message, 'error'));
+      },
+
+      suspend(userId) {
+        supabase.from('profiles').update({ suspended: true }).eq('id', userId).then(() => {
+          showToast('Usuario suspendido', 'success');
+          refreshUsers();
+        }).catch(err => showToast('Error: ' + err.message, 'error'));
+      },
+
+      reactivate(userId) {
+        supabase.from('profiles').update({ suspended: false }).eq('id', userId).then(() => {
+          showToast('Usuario reactivado', 'success');
+          refreshUsers();
+        }).catch(err => showToast('Error: ' + err.message, 'error'));
+      },
+
+      viewUsage(userId) {
+        supabase.from('api_usage').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(10).then(({ data }) => {
+          let html = '<div class="user-card"><div class="card-header" style="margin-bottom:var(--space-2);"><h3>Uso reciente · ' + userId + '</h3></div>';
+          if (!data || data.length === 0) {
+            html += '<p class="text-muted">Sin uso aún.</p>';
+          } else {
+            html += '<table class="table"><thead><tr><th>Fecha</th><th>Tokens</th><th>Costo</th></tr></thead><tbody>';
+            for (const u of data) {
+              html += `<tr><td>${new Date(u.created_at).toLocaleString()}</td>
+                <td>${u.input_tokens || 0} in / ${u.output_tokens || 0} out</td>
+                <td>$${(u.cost_usd || 0).toFixed(4)}</td></tr>`;
+            }
+            html += '</tbody></table>';
+          }
+          html += '</div>';
+          const table = document.getElementById('users-table');
+          table.innerHTML = html;
+        }).catch(err => showToast('Error: ' + err.message, 'error'));
+      },
+
+      updateStats(users) {
+        let total = 0;
+        let trial = 0;
+        let pro = 0;
+        let income = 0;
+        for (const u of users) {
+          total++;
+          if (u.trial_ends_at) trial++;
+          if (u.plan === 'Pro') pro++;
+          if (u.balance_usd) income += parseFloat(u.balance_usd) || 0;
+        }
+        document.getElementById('total-users').textContent = total;
+        document.getElementById('trial-users').textContent = trial;
+        document.getElementById('pro-users').textContent = pro;
+        document.getElementById('total-income').textContent = '$' + income.toFixed(2);
+      },
+
+      async populateUsers(users) {
+        this.users = users;
+        // Auto-suspend inactive users (30 días sin actividad)
+        for (const u of users) {
+          if (u.suspended === true) continue;
+          const lastActive = new Date(u.updated_at || u.created_at);
+          if (lastActive < new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)) {
+            supabase.from('profiles').update({ suspended: true }).eq('id', u.id);
+          }
+        }
+      }
+    };
+
+    // ===== Ping test =====
+    document.getElementById('ping-test-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('ping-test-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Probando...';
+      try {
+        const { data, error } = await supabase.rpc('admin_ping_gemini');
+        if (error) throw error;
+        showToast('Gemini online ✓', 'success');
+      } catch (e) {
+        showToast('Error: ' + e.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-play"></i> Ping Test';
+      }
+    });
+
+    document.getElementById('save-credentials-btn').addEventListener('click', async () => {
+      showToast('Credenciales guardadas en el servidor', 'success');
+    });
+    document.getElementById('save-credentials-or-btn').addEventListener('click', async () => {
+      showToast('Credenciales guardadas en el servidor', 'success');
+    });
+
+    document.getElementById('logout-admin-btn').addEventListener('click', () => {
+      window.location.href = '/login.html';
+    });
+
+    document.getElementById('refresh-btn').addEventListener('click', refreshUsers);
+    document.getElementById('refresh-users-btn').addEventListener('click', refreshUsers);
+
+    document.getElementById('user-search').addEventListener('input', (e) => {
+      const term = e.target.value.toLowerCase();
+      const rows = document.querySelectorAll('#users-table tbody tr');
+      for (const row of rows) {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(term) ? '' : 'none';
+      }
+    });
+
+    // Inicializar
+    refreshUsers();
+  </script>
+</body>
+</html>

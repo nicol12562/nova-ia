@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ajustes · Nova AI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.0/dist/supabase.min.js" integrity="sha384-5oW3r+rO6pP8h0MbL2YJc4pDFH6BcXkG3m7Y6D7kOeRv6Q7pK6hQ7dO+0aZzKG2S" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@10.0.0/marked.min.js" integrity="sha384-4kXqLJDc3vV6HhQ2Oq6yS8KJk4nZ0nB2f5oJ5ZpF9+Zb+9v1m8d4nP8u2C5RbQ3S" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.3/dist/purify.min.js" integrity="sha384-9vJh5Qm7G5Y8Q9L0M8X2vZ4Lb8J7A8L3Z5W5Z9K8X2vZ4Lb8J7A8L3Z5W5Z9K8X" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="/css/base/variables.css">
+  <link rel="stylesheet" href="/css/base/base.css">
+  <link rel="stylesheet" href="/css/components/components.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/pages/ajustes.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="navbar logged-in">
+    <a href="index.html" class="navbar-link">Inicio</a>
+    <a href="workspace.html" class="navbar-link">Workspace</a>
+    <a href="planes.html" class="navbar-link">Planes</a>
+    <a href="ajustes.html" class="navbar-link active">Ajustes</a>
+    <a href="api.html" class="navbar-link">API</a>
+    <div class="nav-action">
+      <span class="pill pill-amber">1000k tokens</span>
+      <div class="user-profile">
+        <div class="avatar">U</div>
+      </div>
+      <a href="login.html" class="btn-text">Salir</a>
+    </div>
+  </header>
+
+  <div class="container" style="padding-top:var(--space-6);">
+    <h1 style="font-size:var(--fs-2xl);font-weight:800;">Configuración de Inferencia &amp; Comportamiento</h1>
+    <p style="color:var(--fg-3);">Configura las directivas que rigen a los modelos de lenguaje.</p>
+
+    <!-- Motor principal -->
+    <div class="config-card">
+      <div class="card-header">
+        <h3>Motor principal</h3>
+        <p class="card-desc">El modelo que usa el chat por defecto.</p>
+      </div>
+      <select id="default-model" style="font-size:var(--fs-base);">
+        <option value="Nova Flash">Nova Flash (Rápido)</option>
+        <option value="Nova Pro">Nova Pro (Potente)</option>
+        <option value="Nova Pro 3.1">Nova Pro 3.1 (Avanzado)</option>
+      </select>
+    </div>
+
+    <!-- Temperatura -->
+    <div class="config-card">
+      <div class="card-header">
+        <h3>Temperatura</h3>
+        <p class="card-desc">Mayor aleatoriedad = más creativo. Menor = más preciso.</p>
+      </div>
+      <div class="slider-group">
+        <div class="slider-row">
+          <label for="temperature">Aleatoriedad vs determinismo</label>
+          <input type="range" id="temperature" min="0" max="1" step="0.1" value="0.7">
+        </div>
+        <div class="slider-row">
+          <span class="value" id="temp-value">0.7</span>
+          <span style="font-size:var(--fs-xs);color:var(--fg-3);">Lógico / Código → Creativo / Ensayos</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top P -->
+    <div class="config-card">
+      <div class="card-header">
+        <h3>Top P (nucleus sampling)</h3>
+        <p class="card-desc">Controla la diversidad de la salida.</p>
+      </div>
+      <div class="slider-group">
+        <div class="slider-row">
+          <label for="top_p">Probabilidad acumulada del vocabulario</label>
+          <input type="range" id="top_p" min="0.1" max="1" step="0.1" value="0.9">
+        </div>
+        <div class="slider-row">
+          <span class="value" id="top-p-value">0.9</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Max tokens -->
+    <div class="config-card">
+      <div class="card-header">
+        <h3>Máximo de tokens de salida</h3>
+        <p class="card-desc">Límite por respuesta.</p>
+      </div>
+      <div class="slider-group">
+        <div class="slider-row">
+          <label for="max_tokens">Tokens por mensaje</label>
+          <input type="range" id="max_tokens" min="256" max="8192" step="256" value="1024">
+        </div>
+        <div class="slider-row">
+          <span class="value" id="max-tokens-value">1024</span>
+          <span style="font-size:var(--fs-xs);color:var(--fg-3);">256 → 8192</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Instrucciones maestras -->
+    <div class="config-card">
+      <div class="card-header">
+        <h3>Instrucción maestra global</h3>
+        <p class="card-desc">Directivas globales que aplican a todas las respuestas.</p>
+      </div>
+      <div style="display:flex;gap:var(--space-2);flex-wrap:wrap;">
+        <button class="shortcut-chip"><span class="kbd">Ctrl+S</span>Senior Dev</button>
+        <button class="shortcut-chip"><span class="kbd">Ctrl+E</span>Ejecutivo</button>
+        <button class="shortcut-chip"><span class="kbd">Ctrl+T</span>Técnico</button>
+        <button class="shortcut-chip"><span class="kbd">Ctrl+C</span>Conciso</button>
+      </div>
+      <div style="margin-top:var(--space-3);">
+        <textarea id="global-instructions" style="font-family:var(--font-ui);font-size:var(--fs-base);" placeholder="Escribe instrucciones globales...">Eres un asistente técnico altamente especializado y conciso.</textarea>
+      </div>
+    </div>
+
+    <!-- Estilo de respuesta -->
+    <div class="config-card">
+      <div class="card-header">
+        <h3>Estilo de respuesta</h3>
+        <p class="card-desc">Cómo debe escribir el modelo.</p>
+      </div>
+      <div style="display:flex;gap:var(--space-2);flex-wrap:wrap;">
+        <label class="toggle-switch">
+          <input type="checkbox" id="style-concise" checked>
+          <span class="slider"></span>
+          <span style="margin-left:0.5rem;font-size:var(--fs-sm);color:var(--fg-1);">Conciso</span>
+        </label>
+        <label class="toggle-switch">
+          <input type="checkbox" id="style-detailed">
+          <span class="slider"></span>
+          <span style="margin-left:0.5rem;font-size:var(--fs-sm);color:var(--fg-1);">Detallado</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Streaming -->
+    <div class="config-card">
+      <div class="card-header">
+        <h3>Streaming</h3>
+        <p class="card-desc">Activar/desactivar respuesta en vivo.</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:var(--space-2);">
+        <label class="toggle-switch">
+          <input type="checkbox" id="streaming-on" checked>
+          <span class="slider"></span>
+        </label>
+        <span style="font-size:var(--fs-sm);color:var(--fg-1);">Activar streaming (respuesta en vivo)</span>
+      </div>
+    </div>
+
+    <!-- Texto del pie -->
+    <p style="font-size:var(--fs-xs);color:var(--fg-4);margin-top:var(--space-3);">
+      Todos los cambios se guardan en el servidor. Validación en el lado del servidor.
+    </p>
+  </div>
+
+  <script type="module">
+    // ===== Sliders =====
+    document.getElementById('temperature').addEventListener('input', (e) => {
+      document.getElementById('temp-value').textContent = e.target.value;
+    });
+    document.getElementById('top_p').addEventListener('input', (e) => {
+      document.getElementById('top-p-value').textContent = e.target.value;
+    });
+    document.getElementById('max_tokens').addEventListener('input', (e) => {
+      document.getElementById('max-tokens-value').textContent = e.target.value;
+    });
+
+    // ===== Guardar =====
+    async function saveSettings() {
+      const settings = {
+        default_model: document.getElementById('default-model').value,
+        temperature: parseFloat(document.getElementById('temperature').value),
+        top_p: parseFloat(document.getElementById('top_p').value),
+        max_tokens: parseInt(document.getElementById('max_tokens').value),
+        default_instructions: document.getElementById('global-instructions').value,
+        response_style: document.getElementById('style-concise').checked ? 'concise' : 'detailed',
+        streaming: document.getElementById('streaming-on').checked,
+      };
+      try {
+        const { error } = await supabase
+          .from('profiles')
+          .update({ settings })
+          .eq('id', supabase.auth.user().id);
+        if (error) throw error;
+        showToast('Configuración guardada', 'success');
+      } catch (e) {
+        showToast('Error al guardar: ' + e.message, 'error');
+      }
+    }
+
+    function showToast(msg, type) {
+      const container = document.createElement('div');
+      container.className = 'toast-container';
+      const toast = document.createElement('div');
+      toast.className = 'toast toast-' + type;
+      toast.innerHTML = `<span class="toast-icon">${type === 'success' ? '✓' : '✗'}</span>${msg}`;
+      container.appendChild(toast);
+      document.body.appendChild(container);
+      setTimeout(() => { if (container.parentNode) container.parentNode.removeChild(container); }, 4000);
+    }
+
+    // Botón guardar (colocar aquí, no en HTML original)
+    const saveBtn = document.createElement('button');
+    saveBtn.className = 'btn-primary';
+    saveBtn.style.marginTop = 'var(--space-4)';
+    saveBtn.innerHTML = '<i class="fas fa-save"></i> Guardar configuración';
+    saveBtn.addEventListener('click', saveSettings);
+    document.querySelector('.container').appendChild(saveBtn);
+
+    // Cargar valores actuales al cargar
+    (async () => {
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('settings')
+        .eq('id', supabase.auth.user().id)
+        .single();
+      if (error || !profile?.settings) return;
+      const s = profile.settings;
+      document.getElementById('default-model').value = s.default_model || 'Nova Flash';
+      document.getElementById('temperature').value = s.temperature ?? 0.7;
+      document.getElementById('top_p').value = s.top_p ?? 0.9;
+      document.getElementById('max_tokens').value = s.max_tokens ?? 1024;
+      document.getElementById('global-instructions').value = s.default_instructions || '';
+      document.getElementById('style-concise').checked = s.response_style !== 'detailed';
+      document.getElementById('style-detailed').checked = s.response_style === 'detailed';
+      document.getElementById('streaming-on').checked = s.streaming ?? true;
+    })();
+  </script>
+</body>
+</html>

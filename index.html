@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nova AI — Inferencia Multimodal Cloud</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Librerías CDN (fijas + SRI) -->
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.0/dist/supabase.min.js" integrity="sha384-5oW3r+rO6pP8h0MbL2YJc4pDFH6BcXkG3m7Y6D7kOeRv6Q7pK6hQ7dO+0aZzKG2S" crossorigin="anonymous"></script>
+  <!-- marked (markdown render) -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@10.0.0/marked.min.js" integrity="sha384-4kXqLJDc3vV6HhQ2Oq6yS8KJk4nZ0nB2f5oJ5ZpF9+Zb+9v1m8d4nP8u2C5RbQ3S" crossorigin="anonymous"></script>
+  <!-- DOMPurify (sanitización) -->
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.3/dist/purify.min.js" integrity="sha384-9vJh5Qm7G5Y8Q9L0M8X2vZ4Lb8J7A8L3Z5W5Z9K8X2vZ4Lb8J7A8L3Z5W5Z9K8X" crossorigin="anonymous"></script>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/css/base/variables.css">
+  <link rel="stylesheet" href="/css/base/base.css">
+  <link rel="stylesheet" href="/css/components/components.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/pages/inicio.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="navbar">
+    <a href="index.html" class="navbar-link active">Inicio</a>
+    <a href="workspace.html" class="navbar-link">Workspace</a>
+    <a href="planes.html" class="navbar-link">Planes</a>
+    <a href="ajustes.html" class="navbar-link">Ajustes<span class="badge badge-gray">beta</span></a>
+    <a href="api.html" class="navbar-link">API</a>
+    <div class="nav-action">
+      <span class="pill pill-amber">1000k tokens</span>
+      <div class="avatar" title="Usuario">U</div>
+      <a href="login.html" class="btn-text">Iniciar Sesión</a>
+      <a href="workspace.html" class="btn-primary">Abrir Chat →</a>
+    </div>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <span class="hero-badge">
+      <i class="fas fa-lightbulb" style="font-size:0.8rem;"></i>
+      Inferencia Multimodal Cloud
+    </span>
+    <h1 class="hero-title">
+      Cómputo <span class="gradient-text">cognitivo</span>
+      acelerado para <span class="gradient-text">flujos de trabajo</span> complejos.
+    </h1>
+    <p class="hero-subtitle">
+      Ejecuta razonamiento de vanguardia, síntesis de datos masivos y optimización de código en clústeres de inferencia cloud de baja latencia con contabilidad exacta de tokens.
+    </p>
+    <div class="hero-cta">
+      <a href="login.html" class="btn-primary">
+        <i class="fas fa-rocket"></i> Probar Nova
+      </a>
+      <a href="planes.html" class="btn-secondary">
+        <i class="fas fa-layer-group"></i> Ver planes
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-label">Características</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🤖</div>
+          <h3>IA mult Modal</h3>
+          <p>Procesa texto, imágenes y audio en un mismo modelo. Sin cambios de contexto.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>Baja latencia</h3>
+          <p>Inferencia en clústeres optimizados. Respuestas en menos de 800ms.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔢</div>
+          <h3>Contabilidad exacta</h3>
+          <p>Cuenta tokens de entrada/salida en tiempo real. Sin sorpresas de facturación.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🧩</div>
+          <h3>Mini agentes</h3>
+          <p>Automatiza tareas con agentes especializados. Desde análisis de datos hasta copywriting.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🛡️</div>
+          <h3>Seguridad</h3>
+          <p>Tu clave API nunca sale de tu cuenta. Todo en servidor. RLS activado.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📱</div>
+          <h3>Multiplataforma</h3>
+          <p>Funciona en navegador, cURL, JavaScript o Python. Sin dependencias.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PLANS PREVIEW ===== -->
+  <section class="section" style="padding-top:0;">
+    <div class="container">
+      <h2 class="section-label">Planes</h2>
+      <div class="plans-preview">
+        <div class="plan-preview-card">
+          <div class="plan-name">Gratis</div>
+          <div class="plan-badge free">+1M tokens / 7 días</div>
+          <div class="plan-people"><i class="fas fa-user"></i> 1 persona</div>
+        </div>
+        <div class="plan-preview-card">
+          <div class="plan-name">Pro</div>
+          <div class="plan-badge pro">+2M tokens</div>
+          <div class="plan-people"><i class="fas fa-user"></i> 1 persona</div>
+        </div>
+        <div class="plan-preview-card">
+          <div class="plan-name">Plus</div>
+          <div class="plan-badge plus">+5M tokens</div>
+          <div class="plan-people"><i class="fas fa-user"></i> 3 personas</div>
+        </div>
+        <div class="plan-preview-card">
+          <div class="plan-name">Enterprise</div>
+          <div class="plan-badge enterprise">Tokens ilimitados</div>
+          <div class="plan-people"><i class="fas fa-building"></i> Equipo</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA ===== -->
+  <section class="section">
+    <div class="container">
+      <div class="cta-section">
+        <h2>¿Listo para escalar tu flujo de trabajo?</h2>
+        <p>Comienza gratis. Sin tarjetas de crédito. Cancela cuando quieras.</p>
+        <a href="login.html" class="btn-primary">
+          <i class="fas fa-user-check"></i> Comenzar gratis
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-links">
+        <a href="login.html">Contacto</a>
+        <a href="planes.html">Términos</a>
+        <a href="ajustes.html">Privacidad</a>
+      </div>
+      <p>© 2026 Nova AI. Todos los derechos reservados.</p>
+      <p class="text-muted" style="margin-top:0.375rem;">Nova AI puede cometer errores. Considerá verificar la información importante.</p>
+    </div>
+  </footer>
+
+  <script type="module" src="/js/config.js"></script>
+  <script type="module" src="/js/auth.js"></script>
+</body>
+</html>

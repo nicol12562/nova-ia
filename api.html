@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nova API · Nova AI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.0/dist/supabase.min.js" integrity="sha384-5oW3r+rO6pP8h0MbL2YJc4pDFH6BcXkG3m7Y6D7kOeRv6Q7pK6hQ7dO+0aZzKG2S" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/css/base/variables.css">
+  <link rel="stylesheet" href="/css/base/base.css">
+  <link rel="stylesheet" href="/css/components/components.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/pages/api.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="navbar logged-in">
+    <a href="index.html" class="navbar-link">Inicio</a>
+    <a href="workspace.html" class="navbar-link">Workspace</a>
+    <a href="planes.html" class="navbar-link">Planes</a>
+    <a href="ajustes.html" class="navbar-link">Ajustes</a>
+    <a href="api.html" class="navbar-link active">API</a>
+    <div class="nav-action">
+      <span class="pill pill-green">$7.49 USD</span>
+      <div class="user-profile">
+        <div class="avatar">U</div>
+      </div>
+      <a href="login.html" class="btn-text">Salir</a>
+    </div>
+  </header>
+
+  <div class="container" style="padding-top:var(--space-6);">
+    <h1 style="font-size:var(--fs-2xl);font-weight:800;">Nova API</h1>
+    <p style="color:var(--fg-3);">Inferencia de alta velocidad para tus aplicaciones.</p>
+
+    <!-- Account cards -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
+      <div class="account-card">
+        <span class="label">CRÉDITOS DISPONIBLES EN CUENTA</span>
+        <div class="value green" id="balance-amount">$7.49 USD</div>
+        <div class="rate-limit">
+          <span class="dot" id="rate-dot"></span>
+          <span id="rate-label">30 req/min · 28 restantes</span>
+        </div>
+      </div>
+      <div class="account-card">
+        <span class="label">TU API KEY</span>
+        <div class="api-key-value" id="api-key-value">
+          <span class="key-prefix">nova_live_</span>
+          <span class="key-suffix" id="key-suffix">••••••••••••</span>
+          <button class="toggle-btn" id="toggle-key-btn" title="Ver clave">👁</button>
+        </div>
+        <div style="display:flex;gap:var(--space-2);">
+          <button class="btn-secondary" id="copy-key-btn">Copiar clave</button>
+          <button class="btn-secondary" id="regenerate-key-btn">
+            <i class="fas fa-rotate-left"></i> Regenerar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Code examples -->
+    <div class="card" style="margin-top:var(--space-4);">
+      <div class="card-header" style="margin-bottom:var(--space-3);">
+        <h3>Ejemplos de requests</h3>
+        <p class="card-desc">Usá este endpoint (no el de Google). Reemplazá `<tu-repo>` con tu GitHub Pages.</p>
+      </div>
+      <div class="code-tabs">
+        <button class="code-tab active" data-tab="curl"><i class="fab fa-curl tab-icon"></i> cURL</button>
+        <button class="code-tab" data-tab="js"><i class="fab fa-js-square tab-icon"></i> JavaScript</button>
+        <button class="code-tab" data-tab="python"><i class="fab fa-python tab-icon"></i> Python</button>
+      </div>
+      <div class="code-block active" id="code-curl">
+        <pre><span class="comment"># Reemplazá <TU-NOMBRE-DE-PROYECTO>.supabase.co con tu dominio real</span>
+<span class="keyword">curl</span> <span class="string">--request POST</span> \
+  <span class="string">--url https://&lt;TU-PROYECTO&gt;.supabase.co/functions/v1/nova-api</span> \
+  <span class="string">--header <span class="string">"Authorization: Bearer nova_live_&lt;CLAVE&gt;"</span></span> \
+  <span class="string">--header <span class="string">"Content-Type: application/json"</span></span> \
+  <span class="string">--data <span class="string">'{"model":"Nova Flash","messages":[{"role":"user","content":"Hola Nova AI, genera un endpoint REST"}]}'</span></span></code></pre>
+      </div>
+      <div class="code-block" id="code-js">
+        <pre><span class="keyword">const</span> res = <span class="keyword">await</span> fetch(<span class="string">'https://&lt;TU-PROYECTO&gt;.supabase.co/functions/v1/nova-api'</span>, {
+  <span class="keyword">method</span>: <span class="string">'POST'</span>,
+  <span class="keyword">headers</span>: {
+    <span class="keyword">Authorization</span>: <span class="string">'Bearer nova_live_&lt;CLAVE&gt;'</span>,
+    <span class="keyword">'Content-Type'</span>: <span class="string">'application/json'</span>,
+  },
+  <span class="keyword">body</span>: <span class="keyword">JSON</span>.stringify({
+    <span class="keyword">model</span>: <span class="string">'Nova Flash'</span>,
+    <span class="keyword">messages</span>: [{ <span class="keyword">role</span>: <span class="string">'user'</span>, <span class="keyword">content</span>: <span class="string">'Hola'</span> }],
+  }),
+});
+<span class="keyword">const</span> { <span class="keyword">data</span> } = <span class="keyword">await</span> res.json();</code></pre>
+      </div>
+      <div class="code-block" id="code-python">
+        <pre><span class="keyword">import</span> requests
+
+resp = requests.<span class="keyword">post</span>(
+    <span class="string">'https://&lt;TU-PROYECTO&gt;.supabase.co/functions/v1/nova-api'</span>,
+    headers={
+        <span class="string">'Authorization'</span>: <span class="string">'Bearer nova_live_&lt;CLAVE&gt;'</span>,
+        <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span>,
+    },
+    json={
+        <span class="string">'model'</span>: <span class="string">'Nova Flash'</span>,
+        <span class="string">'messages'</span>: [{ <span class="string">'role'</span>: <span class="string">'user'</span>, <span class="string">'content'</span>: <span class="string">'Hola'</span> }],
+    },
+)
+<span class="keyword">print</span>(resp.json())</code></pre>
+      </div>
+    </div>
+
+    <!-- Test console -->
+    <div class="card" style="margin-top:var(--space-4);">
+      <div class="card-header" style="margin-bottom:var(--space-3);">
+        <h3>Consola de prueba</h3>
+        <p class="card-desc">Ejecutá una consulta real. Cada prueba descuenta saldo.</p>
+      </div>
+      <div class="test-console">
+        <div class="console-row">
+          <textarea id="test-query" placeholder="Ej. Escribe cómo funciona un LLM en 2 oraciones...">Como funciona una LLM moderna?</textarea>
+          <button class="btn-primary" id="run-test-btn">Ejecutar y Descubrir</button>
+        </div>
+        <div class="console-output" id="test-output">
+          <span class="status">⏳ Completando...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    // ===== Clave API (no se guarda en cliente) =====
+    const API_KEY = 'nova_live_YOUR_KEY_HERE'; // Reemplazar por clave real (solo una vez)
+    const API_KEY_MASK = 'nova_live_fbd7...842a';
+
+    document.getElementById('api-key-value').innerHTML = `
+      <span class="key-prefix">nova_live_</span>
+      <span class="key-suffix" id="key-suffix">${API_KEY_MASK}</span>
+      <button class="toggle-btn" id="toggle-key-btn" title="Ver clave">👁</button>
+    `;
+
+    document.getElementById('toggle-key-btn').addEventListener('click', () => {
+      const btn = document.getElementById('toggle-key-btn');
+      if (btn.classList.contains('visible')) {
+        btn.classList.remove('visible');
+        btn.textContent = '👁';
+      } else {
+        btn.classList.add('visible');
+        btn.textContent = '✕';
+      }
+    });
+
+    document.getElementById('copy-key-btn').addEventListener('click', async () => {
+      if (!API_KEY || API_KEY === 'nova_live_YOUR_KEY_HERE') {
+        showToast('No hay clave disponible. Configurala en /api o admin.', 'error');
+        return;
+      }
+      await navigator.clipboard.writeText(API_KEY);
+      showToast('Clave copiada', 'success');
+    });
+
+    document.getElementById('regenerate-key-btn').addEventListener('click', async () => {
+      showToast('Regenerando clave... (Server-side)', 'info');
+      // Llamada al servidor para regenerar
+      // const { data, error } = await supabase.rpc('admin_regenerate_api_key');
+    });
+
+    // ===== Tabs =====
+    document.querySelectorAll('.code-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.code-block').forEach(b => b.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('code-' + tab.dataset.tab).classList.add('active');
+      });
+    });
+
+    // ===== Test console =====
+    document.getElementById('run-test-btn').addEventListener('click', async () => {
+      const query = document.getElementById('test-query').value.trim();
+      if (!query) { showToast('Escribe una consulta', 'error'); return; }
+
+      document.getElementById('run-test-btn').disabled = true;
+      document.getElementById('run-test-btn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Ejecutando...';
+      document.getElementById('test-output').innerHTML = '<span class="status loading">⏳ Completando...</span>';
+
+      // Llamar a la Edge Function
+      const { data, error } = await supabase.rpc('nova_api_test', {
+        p_query: query,
+        p_model: 'Nova Flash'
+      });
+      document.getElementById('run-test-btn').disabled = false;
+      document.getElementById('run-test-btn').innerHTML = 'Ejecutar y Descubrir';
+
+      if (error) {
+        document.getElementById('test-output').innerHTML =
+          `<span class="status error">✗ Error:</span><pre>${error.message}</pre>`;
+      } else {
+        document.getElementById('test-output').innerHTML = `
+          <span class="status ok">✓ Exitoso</span>
+          <pre>${JSON.stringify(data, null, 2)}</pre>
+        `;
+        // Actualizar balance
+        if (data?.balance_usd) {
+          document.getElementById('balance-amount').textContent = '$' + parseFloat(data.balance_usd).toFixed(2) + ' USD';
+          document.getElementById('rate-label').textContent = '30 req/min · ' + data.remaining + ' restantes';
+        }
+      }
+    });
+
+    function showToast(msg, type) {
+      const container = document.createElement('div');
+      container.className = 'toast-container';
+      const toast = document.createElement('div');
+      toast.className = 'toast toast-' + type;
+      toast.innerHTML = `<span class="toast-icon">${type === 'success' ? '✓' : '✗'}</span>${msg}`;
+      container.appendChild(toast);
+      document.body.appendChild(container);
+      setTimeout(() => { if (container.parentNode) container.parentNode.removeChild(container); }, 4000);
+    }
+  </script>
+</body>
+</html>

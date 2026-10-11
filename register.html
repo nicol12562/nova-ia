@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro · Nova AI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.0/dist/supabase.min.js" integrity="sha384-5oW3r+rO6pP8h0MbL2YJc4pDFH6BcXkG3m7Y6D7kOeRv6Q7pK6hQ7dO+0aZzKG2S" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/css/base/variables.css">
+  <link rel="stylesheet" href="/css/base/base.css">
+  <link rel="stylesheet" href="/css/components/components.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/pages/login.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body>
+
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;background:var(--bg-0);padding:1rem;">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 20% 50%,rgba(79,70,229,0.06),transparent 60%),radial-gradient(ellipse 50% 40% at 80% 20%,rgba(147,51,234,0.06),transparent 60%);"></div>
+
+    <div style="width:100%;max-width:420px;">
+      <div class="logo" style="display:flex;align-items:center;gap:0.5rem;font-size:1.5rem;font-weight:800;color:var(--accent-600);">
+        <div style="width:40px;height:40px;border-radius:10px;background:var(--accent-gradient);display:flex;align-items:center;justify-content:center;font-size:1.1rem;">N</div>
+        Nova AI
+      </div>
+      <h1 style="font-size:var(--fs-2xl);font-weight:800;text-align:center;">Crear Cuenta</h1>
+      <p class="subtitle" style="text-align:center;color:var(--fg-3);font-size:var(--fs-sm);">Accede a tu infraestructura de tokens y modelos.</p>
+
+      <button class="google-btn" id="google-register">
+        <i class="fab fa-google" style="font-size:1.1rem;"></i>
+        Continuar con Google
+      </button>
+
+      <div class="login-divider">
+        <span>O</span>
+      </div>
+
+      <form id="register-form" style="display:flex;flex-direction:column;gap:0.875rem;">
+        <div class="form-group">
+          <label for="reg-email">Correo Electrónico</label>
+          <input type="email" id="reg-email" placeholder="tu@empresa.com" autocomplete="email" required>
+        </div>
+        <div class="form-group">
+          <label for="reg-password">Contraseña</label>
+          <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres" autocomplete="new-password" required minlength="6">
+        </div>
+        <div class="form-group">
+          <label for="reg-name">Nombre para mostrar</label>
+          <input type="text" id="reg-name" placeholder="Tu nombre" autocomplete="name">
+        </div>
+        <button type="submit" class="btn-primary" id="register-submit">
+          <i class="fas fa-user-plus"></i> Crear cuenta
+        </button>
+        <p style="text-align:center;font-size:var(--fs-sm);color:var(--fg-3);">
+          ¿Ya tenés cuenta? <a href="login.html" style="color:var(--accent-600);font-weight:600;">Iniciar Sesión</a>
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('google-register').addEventListener('click', async () => {
+      const { supabase } = window;
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        redirectTo: window.location.origin + '/workspace.html'
+      });
+      if (error) showToast('Error de Google: ' + error.message, 'error');
+    });
+
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('reg-email').value;
+      const password = document.getElementById('reg-password').value;
+      const name = document.getElementById('reg-name').value.trim() || email.split('@')[0];
+      const submitBtn = document.getElementById('register-submit');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creando...';
+
+      try {
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { full_name: name }
+          }
+        });
+        if (error) throw error;
+        if (data.session) {
+          showToast('Cuenta creada ✓', 'success');
+          setTimeout(() => window.location.href = 'workspace.html', 400);
+        } else {
+          showToast('Revisa tu correo para confirmar la cuenta.', 'info');
+        }
+      } catch (err) {
+        showToast('Error: ' + err.message, 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Crear cuenta';
+      }
+    });
+
+    function showToast(msg, type) {
+      const container = document.createElement('div');
+      container.className = 'toast-container';
+      const toast = document.createElement('div');
+      toast.className = 'toast toast-' + type;
+      toast.innerHTML = `<span class="toast-icon">${type === 'success' ? '✓' : '✗'}</span>${msg}`;
+      container.appendChild(toast);
+      document.body.appendChild(container);
+      setTimeout(() => { if (container.parentNode) container.parentNode.removeChild(container); }, 4000);
+    }
+  </script>
+</body>
+</html>

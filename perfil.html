@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfil · Nova AI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.0/dist/supabase.min.js" integrity="sha384-5oW3r+rO6pP8h0MbL2YJc4pDFH6BcXkG3m7Y6D7kOeRv6Q7pK6hQ7dO+0aZzKG2S" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/css/base/variables.css">
+  <link rel="stylesheet" href="/css/base/base.css">
+  <link rel="stylesheet" href="/css/components/components.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/pages/perfil.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="navbar logged-in">
+    <a href="index.html" class="navbar-link">Inicio</a>
+    <a href="workspace.html" class="navbar-link">Workspace</a>
+    <a href="planes.html" class="navbar-link">Planes</a>
+    <a href="ajustes.html" class="navbar-link">Ajustes</a>
+    <a href="api.html" class="navbar-link">API</a>
+    <div class="nav-action">
+      <span class="pill pill-amber">1000k tokens</span>
+      <div class="user-profile">
+        <div class="avatar">U</div>
+      </div>
+      <a href="login.html" class="btn-text">Salir</a>
+    </div>
+  </header>
+
+  <div class="container" style="padding-top:var(--space-6);">
+    <div class="profile-header">
+      <div class="avatar-lg" id="profile-avatar">U</div>
+      <h2 id="profile-name">Usuario</h2>
+      <p class="email" id="profile-email">email@ejemplo.com</p>
+      <div style="margin-top:var(--space-3);display:flex;gap:var(--space-2);">
+        <button class="btn-secondary" id="edit-profile-btn">
+          <i class="fas fa-edit"></i> Editar perfil
+        </button>
+        <button class="btn-secondary" id="open-subscription-btn">
+          <i class="fas fa-credit-card"></i> Suscripción
+        </button>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:260px 1fr;gap:var(--space-4);">
+      <!-- Sidebar de secciones -->
+      <nav class="profile-sidebar" id="profile-sidebar">
+        <div class="section-item active" data-section="general"><span class="icon"><i class="fas fa-cog"></i></span> General</div>
+        <div class="section-item" data-section="personalization"><span class="icon"><i class="fas fa-magic"></i></span> Personalización</div>
+        <div class="section-item" data-section="subscription"><span class="icon"><i class="fas fa-credit-card"></i></span> Suscripción</div>
+        <div class="section-item" data-section="data-control"><span class="icon"><i class="fas fa-database"></i></span> Control de datos</div>
+        <div class="section-item" data-section="security"><span class="icon"><i class="fas fa-shield-alt"></i></span> Seguridad</div>
+      </nav>
+
+      <!-- Contenido -->
+      <div id="profile-content">
+        <!-- SECCIÓN GENERAL -->
+        <div class="profile-section active" id="section-general">
+          <h3 style="font-size:var(--fs-base);font-weight:700;margin-bottom:var(--space-3);">General</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3);">
+            <div>
+              <label style="font-size:var(--fs-sm);font-weight:600;color:var(--fg-1);display:block;margin-bottom:var(--space-1);">Tema</label>
+              <select id="profile-theme" style="font-size:var(--fs-base);">
+                <option value="dark">Oscuro</option>
+                <option value="light">Claro</option>
+                <option value="system">Sistema</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:var(--fs-sm);font-weight:600;color:var(--fg-1);display:block;margin-bottom:var(--space-1);">Idioma</label>
+              <select id="profile-language" style="font-size:var(--fs-base);">
+                <option value="es-LA">Español (Latinoamérica)</option>
+                <option value="es-AR">Español (Argentina)</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-top:var(--space-3);padding:var(--space-3);background:var(--bg-surface);border:1px solid var(--border-color);border-radius:var(--card-radius);">
+            <h4 style="font-size:var(--fs-sm);font-weight:700;color:var(--fg-0);margin-bottom:var(--space-2);">Borrar todos los chats</h4>
+            <p style="font-size:var(--fs-sm);color:var(--fg-3);">Elimina el historial de conversaciones guardado localmente.</p>
+            <button class="btn-danger" id="clear-chats-btn" style="margin-top:var(--space-2);">
+              <i class="fas fa-trash-alt"></i> Borrar todo
+            </button>
+          </div>
+        </div>
+
+        <!-- SECCIÓN PERSONALIZACIÓN -->
+        <div class="profile-section" id="section-personalization">
+          <h3 style="font-size:var(--fs-base);font-weight:700;margin-bottom:var(--space-3);">Personalización</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3);">
+            <div>
+              <label style="font-size:var(--fs-sm);font-weight:600;color:var(--fg-1);display:block;margin-bottom:var(--space-1);">Nombre para mostrar</label>
+              <input type="text" id="display-name" style="font-size:var(--fs-base);padding:var(--space-2);">
+            </div>
+            <div>
+              <label style="font-size:var(--fs-sm);font-weight:600;color:var(--fg-1);display:block;margin-bottom:var(--space-1);">Avatar</label>
+              <input type="text" id="avatar-url" style="font-size:var(--fs-base);padding:var(--space-2);" placeholder="URL de imagen">
+            </div>
+          </div>
+          <div style="margin-top:var(--space-3);">
+            <label style="font-size:var(--fs-sm);font-weight:600;color:var(--fg-1);display:block;margin-bottom:var(--space-1);">Instrucciones personalizadas</label>
+            <textarea id="personal-instructions" style="font-family:var(--font-ui);font-size:var(--fs-base);min-height:80px;"></textarea>
+          </div>
+        </div>
+
+        <!-- SECCIÓN SUSCRIPCIÓN -->
+        <div class="profile-section" id="section-subscription">
+          <h3 style="font-size:var(--fs-base);font-weight:700;margin-bottom:var(--space-3);">Suscripción</h3>
+          <div class="subscription-card">
+            <div class="card-header">
+              <h3>Suscripción actual</h3>
+              <span class="badge badge-purple" id="current-plan">Gratis</span>
+            </div>
+            <div class="card-body">
+              <div class="plan-row">
+                <span class="label">Expires</span>
+                <span class="value" id="plan-expires">—</span>
+              </div>
+              <div class="plan-row">
+                <span class="label">Plan</span>
+                <span class="value" id="current-plan-name">Gratis</span>
+              </div>
+              <div class="plan-row">
+                <span class="label">Tokens usados</span>
+                <span class="value" id="tokens-used">0 / 1.0M</span>
+              </div>
+              <div class="plan-row">
+                <span class="label">Saldo USD</span>
+                <span class="value green" id="balance-usd">$0.00</span>
+              </div>
+            </div>
+          </div>
+          <button class="wa-btn" style="width:100%;margin-top:var(--space-3);" id="change-plan-btn">
+            <i class="fab fa-whatsapp"></i> Cambiar plan / Mejorar plan
+          </button>
+        </div>
+
+        <!-- SECCIÓN CONTROL DE DATOS -->
+        <div class="profile-section" id="section-data-control">
+          <h3 style="font-size:var(--fs-base);font-weight:700;margin-bottom:var(--space-3);">Control de datos</h3>
+          <div class="actions-grid">
+            <button class="action-btn secondary" id="export-data-btn">
+              <i class="fas fa-download"></i> Exportar mis datos
+            </button>
+            <button class="action-btn secondary" id="delete-account-btn">
+              <i class="fas fa-trash-alt"></i> Eliminar cuenta
+            </button>
+          </div>
+        </div>
+
+        <!-- SECCIÓN SEGURIDAD -->
+        <div class="profile-section" id="section-security">
+          <h3 style="font-size:var(--fs-base);font-weight:700;margin-bottom:var(--space-3);">Seguridad</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3);">
+            <div>
+              <label style="font-size:var(--fs-sm);font-weight:600;color:var(--fg-1);display:block;margin-bottom:var(--space-1);">Email</label>
+              <input type="email" id="change-email" style="font-size:var(--fs-base);padding:var(--space-2);">
+            </div>
+            <div>
+              <label style="font-size:var(--fs-sm);font-weight:600;color:var(--fg-1);display:block;margin-bottom:var(--space-1);">Contraseña actual</label>
+              <input type="password" id="current-password" style="font-size:var(--fs-base);padding:var(--space-2);">
+            </div>
+            <div>
+              <label style="font-size:var(--fs-sm);font-weight:600;color:var(--fg-1);display:block;margin-bottom:var(--space-1);">Nueva contraseña</label>
+              <input type="password" id="new-password" style="font-size:var(--fs-base);padding:var(--space-2);">
+            </div>
+            <div>
+              <label style="font-size:var(--fs-sm);font-weight:600;color:var(--fg-1);display:block;margin-bottom:var(--space-1);">Confirmar nueva</label>
+              <input type="password" id="confirm-password" style="font-size:var(--fs-base);padding:var(--space-2);">
+            </div>
+          </div>
+          <button class="btn-danger" id="change-security-btn" style="margin-top:var(--space-3);">
+            <i class="fas fa-key"></i> Cambiar credenciales
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    const sidebar = document.getElementById('profile-sidebar');
+    const sections = document.querySelectorAll('.profile-section');
+    sidebar.querySelectorAll('.section-item').forEach(item => {
+      item.addEventListener('click', () => {
+        sidebar.querySelector('.section-item.active').classList.remove('active');
+        item.classList.add('active');
+        sections.forEach(s => s.classList.remove('active'));
+        document.getElementById('section-' + item.dataset.section).classList.add('active');
+      });
+    });
+
+    // ===== Edit profile =====
+    document.getElementById('edit-profile-btn').addEventListener('click', async () => {
+      const name = document.getElementById('display-name').value.trim();
+      if (!name) { showToast('Ingresá un nombre', 'error'); return; }
+      const { error } = await supabase
+        .from('profiles')
+        .update({ display_name: name })
+        .eq('id', supabase.auth.user().id);
+      if (error) { showToast('Error: ' + error.message, 'error'); return; }
+      document.getElementById('profile-name').textContent = name;
+      showToast('Perfil actualizado', 'success');
+    });
+
+    // ===== Change plan =====
+    document.getElementById('change-plan-btn').addEventListener('click', () => {
+      const email = supabase.auth.user().email;
+      const plan = prompt('Ingresá el nombre del plan (Gratis/Pro/Plus/Enterprise):');
+      if (!plan) return;
+      window.open('https://wa.me/5493416116096?text=' + encodeURIComponent('Hola, quería contratar el plan ' + plan + '. Mi email: ' + email), '_blank');
+    });
+
+    // ===== Export =====
+    document.getElementById('export-data-btn').addEventListener('click', async () => {
+      const { data: convs, error: e1 } = await supabase
+        .from('conversations').select('*').eq('user_id', supabase.auth.user().id);
+      const { data: msgs, error: e2 } = await supabase
+        .from('messages').select('*').eq('user_id', supabase.auth.user().id);
+      if (e1 || e2) { showToast('Error al exportar', 'error'); return; }
+      const blob = new Blob([JSON.stringify({ conversations: convs, messages: msgs }, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'nova-data-' + supabase.auth.user().id + '.json';
+      a.click();
+      showToast('Datos exportados', 'success');
+    });
+
+    // ===== Delete account =====
+    document.getElementById('delete-account-btn').addEventListener('click', async () => {
+      if (!confirm('¿Estás seguro de queres borrar tu cuenta? Esta acción no se puede deshacer.')) return;
+      await supabase.auth.signOut();
+      showToast('Cuenta eliminada', 'success');
+      window.location.href = 'login.html';
+    });
+
+    // ===== Security =====
+    document.getElementById('change-security-btn').addEventListener('click', async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      const current = document.getElementById('current-password').value;
+      const newPass = document.getElementById('new-password').value;
+      const confirm = document.getElementById('confirm-password').value;
+      if (newPass !== confirm) { showToast('Las contraseñas no coinciden', 'error'); return; }
+      const { error } = await supabase.auth.updateUser({ password: newPass });
+      if (error) { showToast('Error: ' + error.message, 'error'); return; }
+      showToast('Contraseña cambiada', 'success');
+    });
+
+    // ===== Clear chats =====
+    document.getElementById('clear-chats-btn').addEventListener('click', async () => {
+      if (!confirm('¿Borrar todos los chats?')) return;
+      const { error } = await supabase
+        .from('messages').delete().eq('user_id', supabase.auth.user().id);
+      if (error) { showToast('Error', 'error'); return; }
+      showToast('Chats borrados', 'success');
+    });
+
+    // ===== Load profile =====
+    (async () => {
+      const { data: profile, error } = await supabase
+        .from('profiles').select('display_name,email,plan,settings').eq('id', supabase.auth.user().id).single();
+      if (error || !profile) return;
+      document.getElementById('profile-avatar').textContent = profile.display_name?.charAt(0).toUpperCase() || 'U';
+      document.getElementById('profile-name').textContent = profile.display_name || 'Usuario';
+      document.getElementById('profile-email').textContent = profile.email || '';
+      document.getElementById('current-plan').textContent = profile.plan || 'Gratis';
+      document.getElementById('current-plan-name').textContent = profile.plan || 'Gratis';
+      const s = profile.settings || {};
+      document.getElementById('tokens-used').textContent = s.tokens_used || 0 + ' / ' + (s.tokens_limit || 1000000) + ' tokens';
+      document.getElementById('balance-usd').textContent = s.balance_usd ? '$' + parseFloat(s.balance_usd).toFixed(2) : '$0.00';
+    })();
+
+    function showToast(msg, type) {
+      const container = document.createElement('div');
+      container.className = 'toast-container';
+      const toast = document.createElement('div');
+      toast.className = 'toast toast-' + type;
+      toast.innerHTML = `<span class="toast-icon">${type === 'success' ? '✓' : '✗'}</span>${msg}`;
+      container.appendChild(toast);
+      document.body.appendChild(container);
+      setTimeout(() => { if (container.parentNode) container.parentNode.removeChild(container); }, 4000);
+    }
+  </script>
+</body>
+</html>

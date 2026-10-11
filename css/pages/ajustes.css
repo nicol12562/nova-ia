@@ -1,0 +1,169 @@
+/* ============================================================
+   NOVA AI — Página AJUSTES
+   ============================================================ */
+
+/* ===== Config cards ===== */
+.config-card {
+  padding: var(--space-4);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-radius);
+  margin-bottom: var(--space-4);
+}
+.config-card .card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+.config-card .card-header h3 {
+  font-size: var(--fs-base);
+  font-weight: 700;
+}
+.config-card .card-header .card-desc {
+  font-size: var(--fs-sm);
+  color: var(--fg-3);
+}
+
+/* ===== Sliders ===== */
+.slider-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+.slider-group .slider-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.slider-group .slider-row label {
+  font-size: var(--fs-sm);
+  color: var(--fg-1);
+  flex: 1;
+  text-align: right;
+}
+.slider-group .slider-row input[type="range"] {
+  flex: 2;
+  accent-color: var(--accent-500);
+}
+.slider-group .slider-row .value {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--accent-600);
+  min-width: 3rem;
+  text-align: left;
+}
+
+/* ===== Shortcut chips ===== */
+.shortcut-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.shortcut-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.3rem 0.6rem;
+  background: var(--bg-2);
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  color: var(--fg-2);
+}
+.shortcut-chip .kbd {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+}
+
+/* ===== Export/Import ===== */
+.export-import {
+  display: flex;
+  gap: var(--space-2);
+}
+.export-import button {
+  flex: 1;
+  padding: 0.5rem;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  border-radius: var(--btn-radius-md);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-out);
+}
+.export-import button:first-child {
+  background: var(--accent-gradient);
+  color: #fff;
+  border: none;
+}
+.export-import button:first-child:hover {
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+}
+.export-import button:nth-child(2) {
+  background: var(--green-600);
+  color: #fff;
+  border: none;
+}
+.export-import button:nth-child(2):hover {
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+}
+.export-import button:nth-child(3) {
+  background: var(--bg-2);
+  border: 1px solid var(--border-color);
+}
+.export-import button:nth-child(3):hover {
+  background: var(--bg-3);
+}
+
+/* ===== Font size control ===== */
+.font-size-control {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+.font-size-control button {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-2);
+  color: var(--fg-2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.font-size-control button:hover {
+  background: var(--bg-3);
+}
+
+/* ===== Theme preview ===== */
+.theme-pills {
+  display: flex;
+  gap: 0.4rem;
+}
+.theme-pill {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--border-color);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+}
+.theme-pill:hover {
+  transform: scale(1.05);
+}
+.theme-pill.active {
+  border-color: var(--accent-500);
+  transform: scale(1.08);
+}
+
+/* ===== Range validation ===== */
+.range-value {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--accent-600);
+  min-width: 3rem;
+}
